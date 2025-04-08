@@ -14,7 +14,36 @@
     <div class="options" id="options"></div>
     <div class="result" id="result"></div>
   </div>
+
   <script src="script.js"></script>
+  <script>
+    fetch("/api/question")
+      .then(res => {
+        if (res.status === 401) {
+          window.location.href = "login.html";
+        }
+        return res.json();
+      })
+      .then(q => {
+        // display question
+      });
+  </script>
+
+  <div class="top-bar">
+    <a href="home.html" class="home-btn">← Home</a>
+    <button onclick="logout()" class="home-btn" style="margin-left: 10px;">Logout</button>
+  </div>
+
+  <script>
+    function logout() {
+      fetch("/api/logout", { method: "POST" })
+        .then(() => {
+          window.location.href = "login.html";
+        });
+    }
+  </script>
+
+  
 
 </body>
 </html>
