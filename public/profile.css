@@ -1,0 +1,99 @@
+.profile-body {
+    font-family: 'Segoe UI', sans-serif;
+    color: #fff;
+    background: linear-gradient(270deg, #1a1a2e, #16213e, #0f3460);
+    background-size: 600% 600%;
+    animation: gradientShift 15s ease infinite;
+    padding: 2rem;
+    min-height: 100vh;
+  }
+  
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  .profile-container {
+    display: flex;
+    max-width: 900px;
+    margin: 100px auto;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 2rem;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+  }
+  
+  .profile-left, .profile-right {
+    flex: 1;
+    padding: 2rem;
+  }
+  
+  .profile-left {
+    border-right: 2px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .profile-left img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    object-fit: cover;
+    margin-bottom: 1rem;
+  }
+  
+  .user-info p {
+    margin: 0.5rem 0;
+    text-align: center;
+  }
+  
+  .edit-btn {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+  
+  .edit-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  .edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    width: 100%;
+  }
+  
+  .edit-form input,
+  .edit-form textarea {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: none;
+  }
+  
+  .edit-form button {
+    padding: 0.5rem;
+    border-radius: 1rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  .profile-right h2 {
+    margin-bottom: 1rem;
+  }
+  

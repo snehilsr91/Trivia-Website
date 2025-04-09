@@ -5,6 +5,7 @@ const path = require("path");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
+const multer = require("multer"); // <-- added for file uploads
 
 dotenv.config();
 
@@ -21,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Session Setup
 app.use(session({
-  secret: "your_super_secret_key", // change in .env for security
+  secret: "your_super_secret_key",
   resave: false,
   saveUninitialized: false,
 }));
@@ -42,6 +43,19 @@ db.connect((err) => {
   }
 });
 
+// ------------------- MULTER CONFIG -------------------
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/avatars/");
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `user_${req.session.user.id}${ext}`);
+  }
+});
+
+const upload = multer({ storage });
+
 // ---------------------- ROUTES ----------------------
 
 // Serve home.html by default
@@ -57,11 +71,20 @@ app.post("/api/signup", async (req, res) => {
   db.query(
     "INSERT INTO users (username, password_hash) VALUES (?, ?)",
     [username, hash],
-    (err) => {
+    (err, results) => {
       if (err) {
         return res.status(400).json({ message: "Username already taken." });
       }
-      res.status(200).json({ message: "Signup successful" });
+
+      const userId = results.insertId;
+
+      db.query(
+        "INSERT INTO user_stats (user_id) VALUES (?)",
+        [userId],
+        () => {
+          res.status(200).json({ message: "Signup successful" });
+        }
+      );
     }
   );
 });
@@ -75,7 +98,6 @@ app.post("/api/login", (req, res) => {
     [username],
     async (err, results) => {
       if (err) return res.sendStatus(500);
-
       if (results.length === 0) {
         return res.status(401).json({ message: "User not found" });
       }
@@ -109,25 +131,23 @@ const requireLogin = (req, res, next) => {
   next();
 };
 
-// Get current user (for frontend display)
+// Get current session user
 app.get("/api/me", (req, res) => {
   if (!req.session.user) return res.status(401).json({ message: "Not logged in" });
   res.status(200).json({ user: req.session.user });
 });
 
-//Get stats for profile page
-app.get("/api/profile/:id", (req, res) => {
-  const userId = req.params.id;
-
-  db.query("SELECT * FROM user_stats WHERE user_id = ?", [userId], (err, result) => {
+// Trivia Question
+app.get("/api/question", requireLogin, (req, res) => {
+  db.query("SELECT * FROM trivia_questions ORDER BY RAND() LIMIT 1", (err, result) => {
     if (err || result.length === 0) {
-      return res.status(404).json({ message: "Stats not found" });
+      return res.status(500).json({ message: "Could not fetch question" });
     }
     res.json(result[0]);
   });
 });
 
-//Update stats
+// Update stats
 app.post("/api/update-stats", (req, res) => {
   if (!req.session.user) return res.status(401).json({ message: "Not logged in" });
 
@@ -138,7 +158,6 @@ app.post("/api/update-stats", (req, res) => {
     if (err) return res.status(500).json({ message: "Error fetching stats" });
 
     if (results.length === 0) {
-      // Create new row
       db.query(
         "INSERT INTO user_stats (user_id, total_answered, correct_answers, streak) VALUES (?, 1, ?, ?)",
         [userId, isCorrect ? 1 : 0, isCorrect ? 1 : 0],
@@ -148,7 +167,6 @@ app.post("/api/update-stats", (req, res) => {
         }
       );
     } else {
-      // Update existing row
       const stats = results[0];
       const newTotal = stats.total_answered + 1;
       const newCorrect = isCorrect ? stats.correct_answers + 1 : stats.correct_answers;
@@ -166,14 +184,46 @@ app.post("/api/update-stats", (req, res) => {
   });
 });
 
+// Get logged-in user's full profile
+app.get("/api/user-profile", (req, res) => {
+  if (!req.session.user) return res.status(401).json({ message: "Not logged in" });
 
-// Trivia Question (protected)
-app.get("/api/question", requireLogin, (req, res) => {
-  db.query("SELECT * FROM trivia_questions ORDER BY RAND() LIMIT 1", (err, result) => {
-    if (err || result.length === 0) {
-      return res.status(500).json({ message: "Could not fetch question" });
+  const userId = req.session.user.id;
+
+  db.query(
+    "SELECT email, description, avatar_url, total_answered, correct_answers, streak FROM user_stats WHERE user_id = ?",
+    [userId],
+    (err, results) => {
+      if (err) return res.status(500).json({ message: "Database error" });
+      if (results.length === 0) return res.status(404).json({ message: "No stats found" });
+
+      const user = results[0];
+      if (!user.avatar_url) user.avatar_url = "/avatars/default.png";
+
+      res.json(user);
     }
-    res.json(result[0]);
+  );
+});
+
+// Update user's profile info (email, description, avatar)
+app.post("/api/update-user-info", upload.single("avatar"), (req, res) => {
+  if (!req.session.user) return res.status(401).json({ message: "Not logged in" });
+
+  const userId = req.session.user.id;
+  const { email, description } = req.body;
+  const avatar_url = req.file ? `/avatars/${req.file.filename}` : null;
+
+  const query = avatar_url
+    ? "UPDATE user_stats SET email = ?, description = ?, avatar_url = ? WHERE user_id = ?"
+    : "UPDATE user_stats SET email = ?, description = ? WHERE user_id = ?";
+
+  const values = avatar_url
+    ? [email || null, description || null, avatar_url, userId]
+    : [email || null, description || null, userId];
+
+  db.query(query, values, (err) => {
+    if (err) return res.status(500).json({ message: "Failed to update" });
+    res.json({ message: "User info updated" });
   });
 });
 

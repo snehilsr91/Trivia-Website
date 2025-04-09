@@ -2,54 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User Profile</title>
+  <link rel="stylesheet" href="profile.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-
-  <div class="top-bar">
-    <a href="home.html" class="home-btn">← Home</a>
-    <button onclick="logout()" class="home-btn" style="margin-left: 10px;">Logout</button>
-  </div>
+<body class="profile-body">
 
   <div class="profile-container">
-    <img id="avatar" class="avatar" src="default-avatar.png" alt="User Avatar">
-    <h2 id="username">Loading...</h2>
 
-    <div class="stats-box">
-      <p><strong>Total Answered:</strong> <span id="total">-</span></p>
-      <p><strong>Correct Answers:</strong> <span id="correct">-</span></p>
-      <p><strong>Accuracy:</strong> <span id="accuracy">-</span>%</p>
-      <p><strong>Streak:</strong> <span id="streak">-</span></p>
+    <!-- Left: Avatar and User Info -->
+    <div class="profile-left">
+      <img id="avatar" src="default-avatar.png" alt="Avatar" />
+      <div class="user-info">
+        <p id="email">Not set</p>
+        <p id="description">No description</p>
+      </div>
+      <button class="edit-btn" onclick="toggleEdit()">Edit Info</button>
+
+      <form id="edit-form" class="edit-form hidden" enctype="multipart/form-data">
+        <input type="email" id="edit-email" placeholder="Email" />
+        <textarea id="edit-description" placeholder="Description"></textarea>
+        <input type="file" id="avatarUpload" accept="image/*" />
+        <button type="button" onclick="saveUserInfo()">Save</button>
+      </form>
     </div>
+
+    <!-- Right: Stats -->
+    <div class="profile-right">
+      <h2>Your Trivia Stats</h2>
+      <p>Total Questions Answered: <strong id="total">0</strong></p>
+      <p>Correct Answers: <strong id="correct">0</strong></p>
+      <p>Current Streak: <strong id="streak">0</strong></p>
+      <button class="edit-btn" onclick="logout()">Logout</button>
+    </div>
+
   </div>
 
-  <script>
-    async function loadProfile() {
-      const res = await fetch('/api/me');
-      if (!res.ok) return window.location.href = 'login.html';
-      const { user } = await res.json();
-
-      const statsRes = await fetch(`/api/profile/${user.id}`);
-      const data = await statsRes.json();
-
-      document.getElementById('username').textContent = user.username;
-      document.getElementById('avatar').src = data.avatar_url || 'default-avatar.png';
-      document.getElementById('total').textContent = data.total_answered;
-      document.getElementById('correct').textContent = data.correct_answers;
-      document.getElementById('accuracy').textContent = data.total_answered > 0 
-        ? Math.round((data.correct_answers / data.total_answered) * 100) : 0;
-      document.getElementById('streak').textContent = data.streak;
-    }
-
-    function logout() {
-      fetch('/api/logout', { method: 'POST' }).then(() => {
-        window.location.href = 'login.html';
-      });
-    }
-
-    loadProfile();
-  </script>
-
+  <script src="profile.js"></script>
 </body>
 </html>
