@@ -115,6 +115,58 @@ app.get("/api/me", (req, res) => {
   res.status(200).json({ user: req.session.user });
 });
 
+//Get stats for profile page
+app.get("/api/profile/:id", (req, res) => {
+  const userId = req.params.id;
+
+  db.query("SELECT * FROM user_stats WHERE user_id = ?", [userId], (err, result) => {
+    if (err || result.length === 0) {
+      return res.status(404).json({ message: "Stats not found" });
+    }
+    res.json(result[0]);
+  });
+});
+
+//Update stats
+app.post("/api/update-stats", (req, res) => {
+  if (!req.session.user) return res.status(401).json({ message: "Not logged in" });
+
+  const userId = req.session.user.id;
+  const isCorrect = req.body.correct;
+
+  db.query("SELECT * FROM user_stats WHERE user_id = ?", [userId], (err, results) => {
+    if (err) return res.status(500).json({ message: "Error fetching stats" });
+
+    if (results.length === 0) {
+      // Create new row
+      db.query(
+        "INSERT INTO user_stats (user_id, total_answered, correct_answers, streak) VALUES (?, 1, ?, ?)",
+        [userId, isCorrect ? 1 : 0, isCorrect ? 1 : 0],
+        (err) => {
+          if (err) return res.status(500).json({ message: "Error inserting stats" });
+          res.json({ message: "Stats initialized" });
+        }
+      );
+    } else {
+      // Update existing row
+      const stats = results[0];
+      const newTotal = stats.total_answered + 1;
+      const newCorrect = isCorrect ? stats.correct_answers + 1 : stats.correct_answers;
+      const newStreak = isCorrect ? stats.streak + 1 : 0;
+
+      db.query(
+        "UPDATE user_stats SET total_answered = ?, correct_answers = ?, streak = ? WHERE user_id = ?",
+        [newTotal, newCorrect, newStreak, userId],
+        (err) => {
+          if (err) return res.status(500).json({ message: "Error updating stats" });
+          res.json({ message: "Stats updated" });
+        }
+      );
+    }
+  });
+});
+
+
 // Trivia Question (protected)
 app.get("/api/question", requireLogin, (req, res) => {
   db.query("SELECT * FROM trivia_questions ORDER BY RAND() LIMIT 1", (err, result) => {

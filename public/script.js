@@ -21,13 +21,17 @@ fetch("/api/question")
         if (answered) return;
         answered = true;
 
-        if (option === trivia.answer) {
+        const isCorrect = option === trivia.answer;
+
+        if (isCorrect) {
           resultEl.textContent = "✅ Correct!";
           resultEl.style.color = "#28a745";
         } else {
           resultEl.textContent = "❌ Wrong!";
           resultEl.style.color = "#dc3545";
         }
+
+        updateUserStats(isCorrect); // ← ADD THIS LINE HERE
 
         document.querySelectorAll(".options button").forEach(b => {
           b.disabled = true;
@@ -44,3 +48,14 @@ fetch("/api/question")
       optionsEl.appendChild(btn);
     });
   });
+
+// ADD THIS FUNCTION TO BOTTOM OF FILE
+function updateUserStats(isCorrect) {
+  fetch("/api/update-stats", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ correct: isCorrect })
+  });
+}

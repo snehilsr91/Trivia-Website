@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Profile</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div class="top-bar">
+    <a href="home.html" class="home-btn">← Home</a>
+    <button onclick="logout()" class="home-btn" style="margin-left: 10px;">Logout</button>
+  </div>
+
+  <div class="profile-container">
+    <img id="avatar" class="avatar" src="default-avatar.png" alt="User Avatar">
+    <h2 id="username">Loading...</h2>
+
+    <div class="stats-box">
+      <p><strong>Total Answered:</strong> <span id="total">-</span></p>
+      <p><strong>Correct Answers:</strong> <span id="correct">-</span></p>
+      <p><strong>Accuracy:</strong> <span id="accuracy">-</span>%</p>
+      <p><strong>Streak:</strong> <span id="streak">-</span></p>
+    </div>
+  </div>
+
+  <script>
+    async function loadProfile() {
+      const res = await fetch('/api/me');
+      if (!res.ok) return window.location.href = 'login.html';
+      const { user } = await res.json();
+
+      const statsRes = await fetch(`/api/profile/${user.id}`);
+      const data = await statsRes.json();
+
+      document.getElementById('username').textContent = user.username;
+      document.getElementById('avatar').src = data.avatar_url || 'default-avatar.png';
+      document.getElementById('total').textContent = data.total_answered;
+      document.getElementById('correct').textContent = data.correct_answers;
+      document.getElementById('accuracy').textContent = data.total_answered > 0 
+        ? Math.round((data.correct_answers / data.total_answered) * 100) : 0;
+      document.getElementById('streak').textContent = data.streak;
+    }
+
+    function logout() {
+      fetch('/api/logout', { method: 'POST' }).then(() => {
+        window.location.href = 'login.html';
+      });
+    }
+
+    loadProfile();
+  </script>
+
+</body>
+</html>

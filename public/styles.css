@@ -240,3 +240,34 @@
   background: rgba(255, 255, 255, 0.2);
   transform: scale(1.05);
 }
+
+.profile-container {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2rem;
+  border-radius: 2rem;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  color: white;
+  text-align: center;
+  width: 90%;
+  max-width: 500px;
+  margin: 8rem auto;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px solid white;
+  margin-bottom: 1rem;
+}
+
+.stats-box {
+  text-align: left;
+  margin-top: 2rem;
+}
+
+.stats-box p {
+  font-size: 1.1rem;
+  margin: 0.6rem 0;
+}
