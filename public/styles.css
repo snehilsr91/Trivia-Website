@@ -1,105 +1,103 @@
 * {
-    box-sizing: border-box;
-  }
+  box-sizing: border-box;
+}
 
-  body {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: linear-gradient(270deg, #a18cd1, #fbc2eb, #f6d365, #96e6a1, #84fab0, #8fd3f4);
-    background-size: 1200% 1200%;
-    animation: gradientBG 20s ease infinite;
-    color: #333;
-  }
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(270deg, #a18cd1, #fbc2eb, #f6d365, #96e6a1, #84fab0, #8fd3f4);
+  background-size: 1200% 1200%;
+  animation: gradientBG 20s ease infinite;
+  color: #333;
+}
 
-  @keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    25% { background-position: 50% 50%; }
-    50% { background-position: 100% 50%; }
-    75% { background-position: 50% 50%; }
-    100% { background-position: 0% 50%; }
-  }
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 50% 50%; }
+  50% { background-position: 100% 50%; }
+  75% { background-position: 50% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
-  .card {
-      background: rgba(255, 255, 255, 0.15);
-      padding: 2rem 3rem;
-      border-radius: 20px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      text-align: center;
-      max-width: 400px;
-      animation: fadeIn 0.5s ease-in-out;
-      border: 2px solid transparent;
-      background-clip: padding-box;
-      position: relative;
-      }
+.card {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 2rem 3rem;
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  text-align: center;
+  max-width: 400px;
+  animation: fadeIn 0.5s ease-in-out;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+}
 
-      .card::before {
-      content: '';
-      position: absolute;
-      inset: -2px;
-      z-index: -1;
-      border-radius: 22px;
-      background: linear-gradient(135deg, #84fab0, #8fd3f4, #fbc2eb, #a18cd1);
-      background-size: 600% 600%;
-      animation: glowBorder 12s ease infinite;
-      }
+.card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #84fab0, #8fd3f4, #fbc2eb, #a18cd1);
+  background-size: 600% 600%;
+  animation: glowBorder 12s ease infinite;
+}
 
-      @keyframes glowBorder {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-      }
+@keyframes glowBorder {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
 
-  h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
 
-  .options {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
+.options button {
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s;
+  background-color: #eee;
+}
 
-  .options button {
-    padding: 0.8rem 1rem;
-    font-size: 1rem;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s;
-    background-color: #eee;
-  }
+.options button:hover {
+  background-color: #d6d6d6;
+  transform: scale(1.02);
+}
 
-  .options button:hover {
-    background-color: #d6d6d6;
-    transform: scale(1.02);
-  }
+.options button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
-  .options button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  
+.result {
+  margin-top: 1.2rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
 
-  .result {
-    margin-top: 1.2rem;
-    font-weight: 600;
-    font-size: 1.1rem;
-  }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  body {
+body {
   margin: 0;
   padding: 0;
   font-family: 'Poppins', sans-serif;
@@ -158,7 +156,6 @@
   transform: scale(1.05);
   box-shadow: 0 6px 20px rgba(0,0,0,0.3);
 }
-
 
 .form-container {
   background: rgba(255, 255, 255, 0.08);

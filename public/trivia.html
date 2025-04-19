@@ -17,7 +17,7 @@
 
   <script src="script.js"></script>
   <script>
-    fetch("/api/question")
+    fetch("/api/daily-question")
       .then(res => {
         if (res.status === 401) {
           window.location.href = "login.html";
