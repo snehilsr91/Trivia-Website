@@ -53,12 +53,13 @@ router.get("/daily-question", requireLogin, (req, res) => {
               return res.status(500).json({ message: "Insert failed" });
             }
 
-            db.query("SELECT * FROM trivia_questions WHERE id = ?", [questionId], (err6, questionResult) => {
-              if (err6 || questionResult.length === 0) {
-                return res.status(500).json({ message: "Could not fetch new question" });
+            db.query("SELECT * FROM trivia_questions WHERE id = ?", [questionId], (err2, questionResult) => {
+              if (err2 || questionResult.length === 0) {
+                return res.status(500).json({ message: "Could not fetch question" });
               }
               res.json(questionResult[0]);
             });
+            
           });
         });
       });
