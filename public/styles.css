@@ -237,3 +237,10 @@ body {
   background: rgba(255, 255, 255, 0.2);
   transform: scale(1.05);
 }
+
+#category {
+  font-size: 1.1rem;
+  color: #333;
+  margin-top: 10px;
+  font-weight: bold;
+}

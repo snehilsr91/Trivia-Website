@@ -9,8 +9,10 @@ fetch("/api/has-attempted")
         const questionEl = document.getElementById("question");
         const optionsEl = document.getElementById("options");
         const resultEl = document.getElementById("result");
+        const categoryEl = document.getElementById("category");
 
         questionEl.textContent = trivia.question;
+        categoryEl.textContent = `Category: ${trivia.category}`;
         const options = [trivia.option1, trivia.option2, trivia.option3, trivia.option4];
 
         optionsEl.innerHTML = "";
