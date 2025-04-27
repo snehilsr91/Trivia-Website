@@ -1,0 +1,22 @@
+/project-root
+├── /db
+│   └── connection.js
+├── /public
+│   └── avatars/  (avatars get saved here)
+│   └── home.html
+│   └── login.html
+│   └── profile.css
+│   └── profile.html
+│   └── profile.js
+│   └── script.js
+│   └── signup.html
+│   └── styles.css
+│   └── trivia.html
+├── /routes
+│   └── authRoutes.js
+│   └── dailyRoutes.js
+│   └── profileRoutes.js
+├── server.js            (main file, very clean now)
+├── package.json
+├── package-lock.json
+└── .env

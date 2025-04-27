@@ -26,15 +26,26 @@ function logout() {
   fetch("/api/user-profile")
     .then(res => res.json())
     .then(data => {
-      const avatar = data.avatar_url ? `${data.avatar_url}` : "default-avatar.png";
-      document.getElementById("avatar").src = avatar;
+      const avatarImg = document.getElementById("avatar");
+
+      if (data.avatar_url?.trim()) {
+        avatarImg.src = data.avatar_url;
+      } else {
+        avatarImg.src = "default-avatar.png";
+      }
+
+      avatarImg.onerror = () => {
+        avatarImg.src = "default-avatar.png"; // fallback if broken link
+      };
+
       document.getElementById("email").textContent = data.email || "Not set";
       document.getElementById("description").textContent = data.description || "No description";
       document.getElementById("edit-email").value = data.email || "";
       document.getElementById("edit-description").value = data.description || "";
-  
+
       document.getElementById("total").textContent = data.total_answered;
       document.getElementById("correct").textContent = data.correct_answers;
       document.getElementById("streak").textContent = data.streak;
     });
+
   
